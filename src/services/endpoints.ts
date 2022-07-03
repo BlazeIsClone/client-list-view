@@ -1,4 +1,5 @@
-const { REACT_APP_API_ENTRY_POINT: prefix } = process.env;
+export const clients = '/clients';
 
-export const clients = `${prefix}/clients`;
-export const companies = `${prefix}/companies`;
+export const client = (id: string | undefined) => `/clients/${id}`;
+
+export const companies = '/companies';

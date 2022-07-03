@@ -1,19 +1,20 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import { useAxios } from "hooks";
-import { clients } from "services";
-import { Clients, Login } from "views";
+import { Clients, ClientSingle, Login, Team } from 'views';
+import { Header } from 'components';
 
 export const Router = () => {
-  const { data: clientsData } = useAxios(clients);
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route index element={<Login />} />
-        <Route path="clients">
-          <Route index element={<Clients clientsData={clientsData} />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  );
+	return (
+		<BrowserRouter>
+			<Header />
+			<Routes>
+				<Route index element={<Login />} />
+				<Route path="/team" element={<Team />} />
+				<Route path="/clients">
+					<Route index element={<Clients />} />
+					<Route path={':clientId'} element={<ClientSingle />} />
+				</Route>
+			</Routes>
+		</BrowserRouter>
+	);
 };
