@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-const { REACT_APP_API_ENTRY_POINT } = process.env;
+const { APP_API_ENTRYPOINT } = import.meta.env;
 
 export const api = axios.create({
-	baseURL: REACT_APP_API_ENTRY_POINT || undefined,
-	headers: { 'content-type': 'application/json' },
+	baseURL: APP_API_ENTRYPOINT || undefined,
+	headers: { 'Content-Type': 'application/json' },
+	withCredentials: true,
 });

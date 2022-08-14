@@ -1,3 +1,11 @@
 {
-  "javascript.preferences.importModuleSpecifier": "non-relative"
+	// Enable Absolute Imports
+	"typescript.preferences.importModuleSpecifier": "non-relative",
+
+	// List of directories to exclude from search
+	"search.exclude": {
+		"**/.git": true,
+		"**/node_modules": true,
+		"**/build": true
+	}
 }

@@ -1,4 +1,13 @@
-import { Router } from 'router';
-import './App.css';
+import { BrowserRouter } from 'react-router-dom';
 
-export const App = (): JSX.Element => <Router />;
+import { Header } from '@components';
+import { Router } from '@router';
+
+export const App = () => {
+	return (
+		<BrowserRouter>
+			<Header />
+			<Router />
+		</BrowserRouter>
+	);
+};
