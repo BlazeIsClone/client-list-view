@@ -4,7 +4,7 @@ import { useHttp } from 'hooks';
 import { client } from 'services';
 
 export const ClientSingle = () => {
-	let { clientId } = useParams<{ clientId?: string | undefined }>();
+	const { clientId } = useParams<{ clientId: string }>();
 
 	const { data }: any = useHttp('get', client(clientId));
 

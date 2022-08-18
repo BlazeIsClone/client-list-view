@@ -5,7 +5,7 @@ export const ClientListItem = ({ data }: any) => {
 	const deleteUser = (id: any, e: any) => {
 		e.preventDefault();
 		axios
-			.post(`http://localhost/v1/clients/${id}`)
+			.delete(`http://localhost:4500/v1/clients/${id}`)
 			.then(res => console.log(res));
 	};
 
