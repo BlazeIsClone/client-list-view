@@ -21,21 +21,28 @@ export const App = () => {
 					Authorization: 'Bearer ' + cookies['access-token'],
 				},
 			});
-			removeCookie('access-token');
 			setData(data);
 		} catch (err) {
 			if (axios.isAxiosError(err)) {
-				api
-					.post('http://localhost:5500/v1/auth/refresh-token')
-					.then(res => console.log('token refresh 200', res))
-					.catch(e => console.log('token refresh err', e));
+				if (err.response?.status === 401) {
+					//window.location.href = `http://localhost:5000/login?callback=${window.location.href}`;
+					api
+						.post('http://localhost:5500/v1/auth/refresh-token')
+						.then(res => console.log('token refresh 200', res))
+						.catch(e => console.log('token refresh err', e));
+
+					console.log('401', err);
+				}
+				if (err.response?.status === 403) {
+					//window.location.href = `http://localhost:5000/login?callback=${window.location.href}`;
+					console.log('403', err);
+				}
 			}
 		}
 	};
 
 	useEffect(() => {
 		fetcher();
-		console.log(data);
 	}, []);
 
 	return (
