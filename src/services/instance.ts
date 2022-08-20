@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { endpoints } from './endpoints';
 
 const { APP_API_ENTRYPOINT } = import.meta.env;
 
@@ -10,42 +11,69 @@ export const instance = axios.create({
 
 let refresh = false;
 
-instance.interceptors.request.use(async req => {
+const refreshToken = async (): Promise<AxiosResponse> => {
 	const response = await axios.post(
-		'http://localhost:5500/v1/auth/refresh-token',
+		endpoints.refreshToken,
 		{},
 		{ withCredentials: true }
 	);
 
-	if (response.status === 200) {
-		req.headers = { Authorization: `Bearer ${response.data.access_token}` };
+	return response;
+};
+
+const onRequest = async (
+	request: AxiosRequestConfig
+): Promise<AxiosRequestConfig> => {
+	try {
+		const response = await refreshToken();
+
+		if (response.status === 200) {
+			request.headers = {
+				Authorization: `Bearer ${response.data.access_token}`,
+			};
+		}
+	} catch (error) {
+		if (axios.isAxiosError(error) && error.response?.status === 401) {
+			window.location.href = endpoints.login;
+		}
 	}
-	return req;
-});
 
-instance.interceptors.response.use(
-	resp => resp,
-	async error => {
-		if (error.response.status === 401 && !refresh) {
-			refresh = true;
+	return request;
+};
 
-			const response = await axios.post(
-				'http://localhost:5500/v1/auth/refresh-token',
-				{},
-				{ withCredentials: true }
-			);
+const onRequestError = (error: AxiosError): Promise<AxiosError> => {
+	return Promise.reject(error);
+};
+
+const onResponse = (response: AxiosResponse): AxiosResponse => {
+	return response;
+};
+
+const onResponseError = async (
+	error: AxiosError
+): Promise<AxiosError | AxiosResponse> => {
+	if (error.response?.status === 401 && !refresh) {
+		refresh = true;
+		try {
+			const response = await refreshToken();
 
 			if (response.status === 200) {
-				error.config.headers.Authorization = `Bearer ${response.data.access_token}`;
+				error.config.headers = {
+					Authorization: `Bearer ${response.data.access_token}`,
+				};
 
 				return axios(error.config);
 			}
+		} catch (error) {
+			if (axios.isAxiosError(error) && error.response?.status === 401) {
+				window.location.href = endpoints.login;
+			}
 		}
-
-		if (error.response.status === 401) {
-			window.location.href = `http://localhost:5000/login?callback=${window.location.href}`;
-		}
-		refresh = false;
-		return error;
 	}
-);
+
+	refresh = false;
+	return Promise.reject(error);
+};
+
+instance.interceptors.request.use(onRequest, onRequestError);
+instance.interceptors.response.use(onResponse, onResponseError);

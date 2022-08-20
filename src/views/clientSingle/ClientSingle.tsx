@@ -1,12 +1,12 @@
 import { useParams } from 'react-router-dom';
 
-import { useHttp } from 'hooks';
-import { client } from 'services';
+import { useHttp } from '@hooks';
+import { endpoints } from '@services';
 
 export const ClientSingle = () => {
 	const { clientId } = useParams<{ clientId: string }>();
 
-	const { data }: any = useHttp('get', client(clientId));
+	const { data }: any = useHttp('get', endpoints.client(clientId));
 
 	return (
 		<main>

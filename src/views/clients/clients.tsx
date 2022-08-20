@@ -1,6 +1,5 @@
 import { ClientListItem } from 'components';
 import { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
 import { instance } from 'services';
 
 export const Clients = () => {
