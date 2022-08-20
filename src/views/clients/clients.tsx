@@ -1,24 +1,14 @@
 import { ClientListItem } from 'components';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { api } from 'services';
+import { instance } from 'services';
 
 export const Clients = () => {
 	const [data, setData] = useState<any>([]);
 	const [page, setPage] = useState(1);
-	const [cookies, setCookie, removeCookie] = useCookies([
-		'access-token',
-		'refresh-token',
-	]);
 
 	useEffect(() => {
-		api
-			.get(`/clients?page=${page}`, {
-				headers: {
-					Authorization: 'Bearer ' + cookies['access-token'],
-				},
-			})
-			.then(({ data }) => setData(data));
+		instance.get(`/clients?page=${page}`).then(({ data }) => setData(data));
 	}, [page]);
 
 	const handlePage = (e: any, change: 'prev' | 'next') => {
