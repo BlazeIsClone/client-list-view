@@ -1,14 +1,6 @@
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 export const ClientListItem = ({ data }: any) => {
-	const deleteUser = (id: any, e: any) => {
-		e.preventDefault();
-		axios
-			.delete(`http://localhost:4500/v1/clients/${id}`)
-			.then(res => console.log(res));
-	};
-
 	const {
 		id,
 		title,
@@ -21,6 +13,10 @@ export const ClientListItem = ({ data }: any) => {
 		company,
 	} = data;
 
+	const deleteUser = (id: any, e: any) => {
+		e.preventDefault();
+	};
+
 	return (
 		<div>
 			<div>
@@ -31,8 +27,8 @@ export const ClientListItem = ({ data }: any) => {
 			<br />
 			<div>
 				<div>
-					<img width={50} height={50} src={company.logo} alt={company.name} />
-					<div>Company: {company.name}</div>
+					<img width={50} height={50} src={company?.logo} alt={company?.name} />
+					<div>Company: {company?.name}</div>
 				</div>
 				<div>
 					<div>

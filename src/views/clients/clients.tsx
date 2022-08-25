@@ -1,19 +1,19 @@
+import { useQuery } from '@hooks';
 import { ClientListItem } from 'components';
-import { useEffect, useState } from 'react';
-import { instance } from 'services';
+import { OptionsBar } from 'components/optionsBar';
+import { useState } from 'react';
 
 export const Clients = () => {
-	const [data, setData] = useState<any>([]);
 	const [page, setPage] = useState(1);
 
-	useEffect(() => {
-		instance.get(`/clients?page=${page}`).then(({ data }) => setData(data));
-	}, [page]);
+	const { response, loading }: { response: any; loading: boolean } = useQuery(
+		`/clients?page=${page}`
+	);
 
 	const handlePage = (e: any, change: 'prev' | 'next') => {
 		e.preventDefault();
 
-		if (change === 'next' && page < data.meta?.last_page) {
+		if (change === 'next' && page < response.meta?.last_page) {
 			setPage(page + 1);
 		}
 
@@ -22,12 +22,15 @@ export const Clients = () => {
 		}
 	};
 
+	if (loading) return <h1>Loading</h1>;
+
 	return (
 		<main>
 			<input type="text" placeholder="search" />
+			<OptionsBar />
 			<ol>
-				{data.data ? (
-					data.data.map((data: any) => (
+				{response.data ? (
+					response.data.map((data: any) => (
 						<ClientListItem key={data.id} data={data} />
 					))
 				) : (
